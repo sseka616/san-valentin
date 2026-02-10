@@ -6,9 +6,7 @@
   <title>Pregunta importante 💘</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
@@ -21,6 +19,31 @@
       align-items: center;
     }
 
+    /* 🟣 Pantalla inicio */
+    .start {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #ff4d6d, #ff9a9e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .start h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .start p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
     .card {
       background: white;
       padding: 30px 20px;
@@ -29,9 +52,10 @@
       box-shadow: 0 15px 40px rgba(0,0,0,0.25);
       width: 90%;
       max-width: 340px;
+      display: none;
     }
 
-    h1 {
+    h2 {
       font-size: 22px;
       margin-bottom: 25px;
     }
@@ -48,15 +72,8 @@
       transition: all 0.3s ease;
     }
 
-    #yes {
-      background-color: #ff4d6d;
-      color: white;
-    }
-
-    #no {
-      background-color: #e0e0e0;
-      color: #333;
-    }
+    #yes { background-color: #ff4d6d; color: white; }
+    #no  { background-color: #e0e0e0; color: #333; }
 
     .final {
       position: fixed;
@@ -71,7 +88,7 @@
       padding: 30px;
     }
 
-    .final h2 {
+    .final h3 {
       font-size: 32px;
       margin-bottom: 20px;
     }
@@ -89,68 +106,64 @@
     }
 
     @keyframes fall {
-      to {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
+      to { transform: translateY(110vh); opacity: 0; }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- 🟣 Pantalla tocar para empezar -->
+  <div class="start" id="start">
+    <h1>Toca para empezar 💖</h1>
+    <p>(prometo que vale la pena)</p>
+  </div>
+
   <!-- 🎵 Música -->
   <audio id="music" loop>
     <source src="CYA.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="card">
-    <h1>Hola mi niña, ¿Quiere ser mi San Valentín? 💘</h1>
+  <div class="card" id="card">
+    <h2>Hola mi niña, ¿Quiere ser mi San Valentín? 💘</h2>
     <button id="yes">Sí 💖</button>
     <button id="no">No 💔</button>
   </div>
 
   <div class="final" id="final">
-    <h2>Sabía que dirías que sí 🥰</h2>
+    <h3>Sabía que dirías que sí 🥰</h3>
     <p>
-      Gracias por hacerme la persona más feliz del mundo, <br>
-      teamooo 💕 <br>
+      Gracias por hacerme la persona más feliz del mundo,<br>
+      teamooo 💕<br>
       Nos vemos el jueves mi antito hermosaa ❤️
     </p>
   </div>
 
   <script>
+    const startScreen = document.getElementById("start");
+    const card = document.getElementById("card");
     const yesBtn = document.getElementById("yes");
     const noBtn = document.getElementById("no");
     const finalScreen = document.getElementById("final");
     const music = document.getElementById("music");
 
-    let noCount = 0;
     let musicStarted = false;
+    let noCount = 0;
 
     const noTexts = [
       "Piénsalo bien 😭",
       "que fome sabes 😩",
-      "de veritas de veritas no quiere? 😭",
-      "buuuuuu 😩",
-      "yo se que si quiere 😩",
+      "de veritas no quiere? 😭",
+      "buuuu 😩",
+      "yo sé que sí quiere 😩",
       "ya po mi amor 😭",
       "listo, gané 😈"
     ];
 
-    // 📱 Pantalla completa
-    function goFullscreen() {
-      const el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    }
-
-    // 📳 Vibración
-    function vibrate(pattern = [100, 50, 100]) {
+    function vibrate(pattern) {
       if (navigator.vibrate) navigator.vibrate(pattern);
     }
 
-    // 🎵 Fade in real
     function startMusicFadeIn() {
       if (musicStarted) return;
       musicStarted = true;
@@ -160,55 +173,47 @@
 
       let volume = 0;
       const fade = setInterval(() => {
-        if (volume < 1) {
-          volume += 0.02;
-          music.volume = volume;
-        } else {
+        volume += 0.1; // 1 segundo total
+        if (volume >= 1) {
+          music.volume = 1;
           clearInterval(fade);
+        } else {
+          music.volume = volume;
         }
       }, 100);
     }
 
-    // 👉 CUALQUIER interacción inicia TODO
-    function firstInteraction() {
-      goFullscreen();
+    // 👉 TOCAR PARA EMPEZAR
+    startScreen.addEventListener("click", () => {
       startMusicFadeIn();
-      vibrate([200]);
-    }
+      startScreen.style.display = "none";
+      card.style.display = "block";
+      vibrate([100]);
+    });
 
-    document.addEventListener("click", firstInteraction, { once: true });
-    document.addEventListener("touchstart", firstInteraction, { once: true });
-
-    // 💖 Botón SÍ
     yesBtn.addEventListener("click", () => {
       finalScreen.style.display = "flex";
       startHearts();
-      vibrate([100, 50, 100, 50, 200]);
+      vibrate([100, 50, 100]);
     });
 
-    // 😈 Botón NO imposible
     noBtn.addEventListener("click", () => {
       noCount++;
 
       const maxX = window.innerWidth / 2 - 100;
       const maxY = window.innerHeight / 2 - 100;
-
       const x = Math.random() * maxX * 2 - maxX;
       const y = Math.random() * maxY * 2 - maxY;
 
       const scale = Math.max(0, 1 - noCount * 0.2);
-
       noBtn.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
       noBtn.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
 
       vibrate([50]);
 
-      if (scale === 0) {
-        noBtn.style.display = "none";
-      }
+      if (scale === 0) noBtn.style.display = "none";
     });
 
-    // ❤️ Corazones
     function startHearts() {
       setInterval(() => {
         const heart = document.createElement("div");
@@ -217,7 +222,6 @@
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = Math.random() * 2 + 3 + "s";
         document.body.appendChild(heart);
-
         setTimeout(() => heart.remove(), 5000);
       }, 300);
     }
