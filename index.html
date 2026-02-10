@@ -99,9 +99,10 @@
 
 <body>
 
-  <audio id="music" autoplay loop>
-  <source src="CYA.mp3" type="audio/mpeg">
-</audio>
+  <!-- 🎵 Música -->
+  <audio id="music" loop>
+    <source src="CYA.mp3" type="audio/mpeg">
+  </audio>
 
   <div class="card">
     <h1>Hola mi niña, ¿Quiere ser mi San Valentín? 💘</h1>
@@ -113,7 +114,7 @@
     <h2>Sabía que dirías que sí 🥰</h2>
     <p>
       Gracias por hacerme la persona más feliz del mundo, <br>
-      teamooo 💕 <br>  
+      teamooo 💕 <br>
       Nos vemos el jueves mi antito hermosaa ❤️
     </p>
   </div>
@@ -122,24 +123,70 @@
     const yesBtn = document.getElementById("yes");
     const noBtn = document.getElementById("no");
     const finalScreen = document.getElementById("final");
+    const music = document.getElementById("music");
 
     let noCount = 0;
+    let musicStarted = false;
+
     const noTexts = [
       "Piénsalo bien 😭",
       "que fome sabes 😩",
       "de veritas de veritas no quiere? 😭",
       "buuuuuu 😩",
       "yo se que si quiere 😩",
-      "es una pesada😭",
-      "buuuuuu 😩",
-      "yo se que ahora diras que si mi bebé ❤️"
+      "ya po mi amor 😭",
+      "listo, gané 😈"
     ];
 
+    // 📱 Pantalla completa
+    function goFullscreen() {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+
+    // 📳 Vibración
+    function vibrate(pattern = [100, 50, 100]) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    // 🎵 Fade in real
+    function startMusicFadeIn() {
+      if (musicStarted) return;
+      musicStarted = true;
+
+      music.volume = 0;
+      music.play();
+
+      let volume = 0;
+      const fade = setInterval(() => {
+        if (volume < 1) {
+          volume += 0.02;
+          music.volume = volume;
+        } else {
+          clearInterval(fade);
+        }
+      }, 100);
+    }
+
+    // 👉 CUALQUIER interacción inicia TODO
+    function firstInteraction() {
+      goFullscreen();
+      startMusicFadeIn();
+      vibrate([200]);
+    }
+
+    document.addEventListener("click", firstInteraction, { once: true });
+    document.addEventListener("touchstart", firstInteraction, { once: true });
+
+    // 💖 Botón SÍ
     yesBtn.addEventListener("click", () => {
       finalScreen.style.display = "flex";
       startHearts();
+      vibrate([100, 50, 100, 50, 200]);
     });
 
+    // 😈 Botón NO imposible
     noBtn.addEventListener("click", () => {
       noCount++;
 
@@ -149,14 +196,19 @@
       const x = Math.random() * maxX * 2 - maxX;
       const y = Math.random() * maxY * 2 - maxY;
 
-      noBtn.style.transform = `
-        translate(${x}px, ${y}px)
-        scale(${Math.max(0.1, 1 - noCount * 0.15)})
-      `;
+      const scale = Math.max(0, 1 - noCount * 0.2);
 
+      noBtn.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
       noBtn.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
+
+      vibrate([50]);
+
+      if (scale === 0) {
+        noBtn.style.display = "none";
+      }
     });
 
+    // ❤️ Corazones
     function startHearts() {
       setInterval(() => {
         const heart = document.createElement("div");
@@ -173,4 +225,3 @@
 
 </body>
 </html>
-
