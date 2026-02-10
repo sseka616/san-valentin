@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pregunta importante 💘</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      width: 90%;
+      max-width: 340px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      width: 80%;
+      max-width: 220px;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+    }
+
+    #yes {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    #no {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .final {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #ff4d6d, #ff9a9e);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .final h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .final p {
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    .heart {
+      position: fixed;
+      top: -10px;
+      font-size: 26px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<audio id="music" loop>
+  <source src="CYA.mp3" type="audio/mpeg">
+</audio>
+
+<body>
+
+  <div class="card">
+    <h1>Hola mi niña, ¿Quiere ser mi San Valentín? 💘</h1>
+    <button id="yes">Sí 💖</button>
+    <button id="no">No 💔</button>
+  </div>
+
+  <div class="final" id="final">
+    <h2>Sabía que dirías que sí 🥰</h2>
+    <p>
+      Gracias por hacerme la persona más feliz del mundo, <br>
+      teamooo 💕 <br>  
+      Nos vemos el jueves mi antito hermosaa ❤️
+    </p>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const finalScreen = document.getElementById("final");
+
+    let noCount = 0;
+    const noTexts = [
+      "Piénsalo bien 😭",
+      "que fome sabes 😩",
+      "de veritas de veritas no quiere? 😭",
+      "buuuuuu 😩",
+      "yo se que si quiere 😩",
+      "es una pesada😭",
+      "buuuuuu 😩",
+      "yo se que ahora diras que si mi bebé ❤️"
+    ];
+
+    yesBtn.addEventListener("click", () => {
+      finalScreen.style.display = "flex";
+      startHearts();
+    });
+
+    noBtn.addEventListener("click", () => {
+      noCount++;
+
+      const maxX = window.innerWidth / 2 - 100;
+      const maxY = window.innerHeight / 2 - 100;
+
+      const x = Math.random() * maxX * 2 - maxX;
+      const y = Math.random() * maxY * 2 - maxY;
+
+      noBtn.style.transform = `
+        translate(${x}px, ${y}px)
+        scale(${Math.max(0.1, 1 - noCount * 0.15)})
+      `;
+
+      noBtn.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
+    });
+
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 5000);
+      }, 300);
+    }
+  </script>
+
+</body>
+</html>
